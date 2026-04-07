@@ -18,3 +18,7 @@ paths:
 
 3. **최적화 설계가 필요할 경우**
    - 커스텀 Update Manager, 문자열 해싱(StringToHash), ScriptableObject를 이용한 플라이웨이트 패턴 등 구조적인 성능 최적화가 필요하다고 판단되면, `unity-performance` 스킬을 호출하여 심화 매뉴얼을 읽고 적용하십시오.
+
+4. **LINQ 사용 엄격 금지 (Hot Path)**
+   - `Update()` 내부나 프레임당 호출되는 함수에서 `System.Linq` (`.Where()`, `.ToList()`, `.Select()`) 사용을 원천 금지합니다.
+   - 배열 검색이 필요하다면 반드시 `for` 루프를 사용하고, 컬렉션 변환이 필요하다면 캐싱된 `List<T>`를 재사용하십시오.

@@ -18,8 +18,26 @@ paths:
 - **RPC (Remote Procedure Call):** 데미지 발생 알림, 스킬 이펙트 재생 등 '일회성 이벤트나 요청(One-time events or requests)'에만 사용하십시오. RPC를 상태 동기화 목적으로 남용해서는 절대 안 됩니다.
 
 ### 3. 클라이언트 측 예측 (Client-Side Prediction) 주의
-- 클라이언트에서 반응성을 높이기 위해 예측 로직을 도입할 경우, 예측이 적용된 시각적(Visual) 상태와 서버가 판정하는 실제 권한 처리 로직을 코드 레벨에서 완벽히 분리하십시오.
-- 클라이언트의 예측된 상태를 서버가 확정한 최종 진실(Final server truth)과 조용히 뒤섞지 마십시오. 예측 실패 시 상태를 복구(Reconciliation)하는 과정을 명확히 문서화해야 합니다.
+- 예측 상태와 서버 상태를 하나의 변수에 섞어 쓰지 마십시오.
+  ```csharp
+  public NetworkVariable<Vector3> ServerPosition = new NetworkVariable<Vector3>();
+  private Vector3 _predictedPosition;
+  ```
 
 ### 4. 심화 지식 참조
 - 복잡한 네트워크 패턴 설계가 필요하다면 `unity-ngo` 스킬을 호출하여 상세 매뉴얼을 읽고 적용하십시오.
+
+## NGO 동기화 테스트 규칙
+넷코드(NetworkVariable, Rpc 등) 관련 로직을 수정했다면, 반드시 `--scenario` 모드를 사용하여 호스트와 클라이언트 환경이 모두 정상 작동하는지 증명해야 합니다.
+
+1. `testplay.scenario.json` (예시) 파일 구성:
+   ```json
+   {
+     "schema_version": "1",
+     "instances": [
+       {"role": "host", "config": "testplay.json", "ready_phase": "running"},
+       {"role": "client", "config": "testplay.json", "depends_on": "host"}
+     ]
+   }
+   ```
+2. `testplay run --scenario testplay.scenario.json`을 실행하여 두 인스턴스의 Exit Code가 모두 0인지 확인하십시오.
