@@ -1,0 +1,398 @@
+[
+  {
+    "id": "SETUP-01",
+    "task": "Netcode for GameObjects (com.unity.netcode.gameobjects) 패키지 설치",
+    "status": "done",
+    "verification": "packages-lock.json에서 com.unity.netcode.gameobjects 2.10.0 확인"
+  },
+  {
+    "id": "NET-01",
+    "task": "NetworkManager 씬 설정 및 기본 Host/Client 연결",
+    "status": "done",
+    "verification": "Unity 에디터에서 Host 실행 후 두 번째 빌드 또는 ParrelSync로 Client 접속 확인. 양측 콘솔에 연결 로그 출력"
+  },
+  {
+    "id": "NET-02",
+    "task": "NetworkPlayer 프리팹 생성 (NetworkObject + NetworkTransform)",
+    "status": "done",
+    "verification": "Host에서 Player 스폰 시 Client 화면에도 동일한 오브젝트가 생성되고 위치가 동기화됨"
+  },
+  {
+    "id": "PLAYER-01",
+    "task": "PlayerController: 이동 (CharacterController + NetworkTransform, 서버 권위)",
+    "status": "done",
+    "verification": "로컬 플레이어만 입력을 받으며, 이동 결과가 모든 클라이언트에 동기화됨. 다른 클라이언트의 플레이어는 입력 불가"
+  },
+  {
+    "id": "PLAYER-02",
+    "task": "PlayerInputHandler: Input System 이벤트 기반 입력 연동",
+    "status": "done",
+    "verification": "InputSystem_Actions의 Move/Sprint/Jump 액션이 PlayerController에 이벤트로 전달됨. Update() 내 polling 없음"
+  },
+  {
+    "id": "PLAYER-03",
+    "task": "PlayerAnimationController: Animator 상태 NetworkVariable로 동기화",
+    "status": "done",
+    "verification": "로컬 플레이어가 이동 시 모든 클라이언트에서 Walk 애니메이션 재생. Idle/Walk 전환 확인"
+  },
+  {
+    "id": "PLAYER-04",
+    "task": "Player FSM: Idle / Walk / Run / Attack 상태 머신",
+    "status": "done",
+    "verification": "각 상태 전환이 올바른 조건에서만 발생. 상태 중복 진입 없음. 서버와 클라이언트 상태 일치"
+  },
+  {
+    "id": "COMBAT-01",
+    "task": "서버 권위 HP 시스템 (NetworkVariable<int> + 사망 처리)",
+    "status": "done",
+    "verification": "HP 변경은 서버에서만 가능. 모든 클라이언트에서 HP UI 동기화. HP 0 시 사망 처리"
+  },
+  {
+    "id": "COMBAT-01-UI",
+    "task": "HP UI 렌더링 (WorldSpace 또는 HUD Canvas + OnHpChanged 이벤트 구독)",
+    "status": "done",
+    "verification": "플레이어 HP 변경 시 모든 클라이언트 화면에 HP 수치 반영. 사망 시 HP 바 0 표시"
+  },
+  {
+    "id": "COMBAT-02",
+    "task": "공격 요청 RPC + 서버 데미지 처리",
+    "status": "done",
+    "verification": "클라이언트가 공격 ServerRpc 전송 → 서버가 대상 유효성 검증 → HP 차감. 클라이언트가 직접 HP 수정 불가"
+  },
+  {
+    "id": "MONSTER-01",
+    "task": "MonsterData ScriptableObject 설계 (스탯 및 탐지 필드)",
+    "status": "done",
+    "verification": "Assets 우클릭 → Create → GNF → Monster Data로 에셋 생성 가능. 각 필드 Inspector 편집 확인"
+  },
+  {
+    "id": "MONSTER-02",
+    "task": "MonsterHealth 서버 권위 로직 및 이벤트",
+    "status": "done",
+    "verification": "서버 권위 HP 관리 및 적용 검증"
+  },
+  {
+    "id": "MONSTER-03",
+    "task": "MonsterAnimationController: NetworkVariable<byte> 상태 동기화 (Idle/Chase/Attack/Dead)",
+    "status": "done",
+    "verification": "FSM 상태 변경 시 모든 클라이언트 Animator 동기화. 늦게 접속한 클라이언트도 현재 상태 수신"
+  },
+  {
+    "id": "MONSTER-04",
+    "task": "MonsterFSM 서버 기반 AI (탐지 및 상태 전이)",
+    "status": "done",
+    "verification": "에이전트 이동 및 추적 검증"
+  },
+  {
+    "id": "MONSTER-05",
+    "task": "AggroSystem 구현 (거리 및 데미지 우선순위 누산)",
+    "status": "done",
+    "verification": "어그로 점수 누적 및 변경 로그 확인"
+  },
+  {
+    "id": "MONSTER-06",
+    "task": "MonsterManager (최적화용 중앙 틱 분산 처리)",
+    "status": "done",
+    "verification": "프레임당 업데이트 분산 확인"
+  },
+  {
+    "id": "MONSTER-07",
+    "task": "MonsterSpawner: 서버 전용 연속 스포너 (spawnInterval, spawnRadius, maxMonsters, MonsterData 참조)",
+    "status": "done",
+    "verification": "spawnInterval마다 스폰. 씬 내 몬스터 수 < maxMonsters일 때만 스폰. 플레이어 주변 spawnRadius 내 랜덤 NavMesh 위치에 스폰"
+  },
+  {
+    "id": "MONSTER-08",
+    "task": "MonsterObjectPool 시스템 구축",
+    "status": "done",
+    "verification": "풀 반환 및 재활용 여부 확인"
+  },
+  {
+    "id": "MONSTER-09",
+    "task": "IDamageable 기반 데미지 체계 통합 연동",
+    "status": "done",
+    "verification": "플레이어/몬스터 공통 피격 인터페이스 동작 확인"
+  },
+  {
+    "id": "ROLE-01-A",
+    "task": "RoleType Enum 및 RoleData 데이터 모델 뼈대 정의",
+    "status": "done",
+    "verification": "Assets 영역 에셋 생성 검증"
+  },
+  {
+    "id": "ROLE-01-B",
+    "task": "RoleData 역할군(탱/딜/힐) 세부 스탯 및 배율 속성 추가",
+    "status": "done",
+    "verification": "인스펙터 상 속성 노출 확인"
+  },
+  {
+    "id": "ROLE-02",
+    "task": "LobbyRoleSelector 서버 권위의 역할 선택 로직",
+    "status": "done",
+    "verification": "역할 선택 저장 및 중복 방지 확인"
+  },
+  {
+    "id": "ROLE-03",
+    "task": "PlayerSetup 스폰 시 RoleData 로컬 스탯 병합 적용",
+    "status": "done",
+    "verification": "캐릭터 스폰 시 체력/속도 변화 확인"
+  },
+  {
+    "id": "ROLE-04",
+    "task": "AggroMultiplier 통한 역할군별 어그로 획득량 보정",
+    "status": "done",
+    "verification": "공격 시 역할군에 따른 획득량 테이블 대조 확인"
+  },
+  {
+    "id": "ROLE-05-A",
+    "task": "DPS 전용 무적 플래그(isInvincible) 통합",
+    "status": "done",
+    "verification": "서버 무적 판정 로그 확인"
+  },
+  {
+    "id": "ROLE-05-B",
+    "task": "DPS용 단순 전방 대쉬(Dummy Dash) 발동 뼈대",
+    "status": "done",
+    "verification": "단순 대쉬 물리 이동 확인"
+  },
+  {
+    "id": "WEAPON-01-A",
+    "task": "WeaponData 스탯 필드 추가 (attackDamage, attackRange 등)",
+    "status": "done",
+    "verification": "무기 인스펙터 편집 반영"
+  },
+  {
+    "id": "WEAPON-01-B",
+    "task": "PlayerCombat 데미지를 장착된 무기(WeaponData)에서 읽도록 수정",
+    "status": "done",
+    "verification": "장착 무기별 타격 수치 변화 인게임 검증"
+  },
+  {
+    "id": "WEAPON-02",
+    "task": "서버 권위 무기 교체(EquipWeapon) 통신부 개발",
+    "status": "done",
+    "verification": "서버 교체 및 타 클라이언트 동기화 관측"
+  },
+  {
+    "id": "WEAPON-03",
+    "task": "장착 무기의 직업 제한 (RoleType) 검증 체계 구현",
+    "status": "done",
+    "verification": "타 클래스 무기 착용 거부 응답 확인"
+  },
+  {
+    "id": "ITEM-01-A",
+    "task": "ItemData SO 설계 및 패시브/액티브 ItemType 분리",
+    "status": "done",
+    "verification": "아이템 데이터 객체 생성 검증"
+  },
+  {
+    "id": "ITEM-01-B",
+    "task": "IItemEffect 인터페이스 이벤트 (Equipped, Activated) 정의",
+    "status": "done",
+    "verification": "인터페이스 스크립트 연결 확인"
+  },
+  {
+    "id": "ITEM-02",
+    "task": "PlayerInventory 서버 권위 NetworkList 슬롯 동기화",
+    "status": "done",
+    "verification": "아이템 습득 시 네트워크 인벤토리 정보 검증"
+  },
+  {
+    "id": "ITEM-03",
+    "task": "패시브 아이템 장착 시 IItemEffect 자동 호출 체계 구현",
+    "status": "done",
+    "verification": "스탯형 더미 패시브 부착 후 캐릭터 정보 확인"
+  },
+  {
+    "id": "ITEM-04-A",
+    "task": "UseItem 입력 바인딩 처리 (액티브 아이템용)",
+    "status": "done",
+    "verification": "액티브 입력 콘솔 트리거 확인"
+  },
+  {
+    "id": "ITEM-04-B",
+    "task": "서버 사이드 아이템 쿨다운 관리 검증",
+    "status": "done",
+    "verification": "재발동 거부 현상 클라이언트 관측"
+  },
+  {
+    "id": "STATUS-01",
+    "task": "StatusEffectData SO 및 IStatusEffectable 인터페이스 생성",
+    "status": "done",
+    "verification": "인터페이스 컴파일 여부 점검"
+  },
+  {
+    "id": "STATUS-01-B",
+    "task": "StatusTargetType enum 추가 및 StatusEffectData에 isInstant·targetType 필드 추가, StatusBehaviour 즉발 분기 처리",
+    "status": "done",
+    "verification": "컴파일 성공 및 Inspector에서 isInstant·targetType 필드 확인"
+  },
+  {
+    "id": "STATUS-02",
+    "task": "플레이어/몬스터 Status 컴포넌트 추가 및 NetworkList 연동",
+    "status": "done",
+    "verification": "서버 발동 지속 효과 클라이언트 동기화 검증"
+  },
+  {
+    "id": "STATUS-03",
+    "task": "디버프 6종(Wound, Stun, Poison, Burn, Fatigue, Slow) 효과 로직",
+    "status": "done",
+    "verification": "디버프 부착 대상의 행동 제약/스탯 페널티 확인"
+  },
+  {
+    "id": "STATUS-04",
+    "task": "버프 5종(Invincible, Stealth, Valor, Haste, Fortify) 효과 로직",
+    "status": "done",
+    "verification": "해당 버프 효과로 인한 우위/면역 확인"
+  },
+  {
+    "id": "STATUS-FIX-01",
+    "task": "StatusBehaviour.Update IsSpawned 가드 추가 + PlayerStatus._health Awake 캐싱 (PR#2 리뷰 대응)",
+    "status": "done",
+    "verification": "IsSpawned 가드 추가 후 컴파일 성공. PlayerStatus._health가 Awake에서 캐싱되어 Update 핫패스에서 GetComponent 호출 없음 확인"
+  },
+  {
+    "id": "STATUS-FIX-02",
+    "task": "ActiveEffect에 CasterClientId 추가 — DoT 피해 시 어그로 귀속 (PR#2 리뷰 대응)",
+    "status": "done",
+    "verification": "Poison/Burn 틱 피해가 AggroSystem에 시전자 clientId로 귀속됨. attackerClientId=0 고정 제거"
+  },
+  {
+    "id": "STATUS-OPT-01",
+    "task": "StatusBehaviour TickEffects NetworkList 쓰기 최적화 — RemainingDuration 서버 로컬 분리 검토 (PR#2 리뷰 대응)",
+    "status": "done",
+    "verification": "효과 추가/만료 시점에만 NetworkList 갱신. 활성 효과 1개당 초당 1회 전체 구조체 전송 제거. 컴파일 성공 및 late join 동기화 유지 확인"
+  },
+  {
+    "id": "STATUS-FIX-03",
+    "task": "StatusBehaviour OnNetworkDespawn에서 _serverDurations.Clear() + ApplyEffect/RemoveEffect IsSpawned 가드 추가 (PR#2 리뷰 대응)",
+    "status": "done",
+    "verification": "컴파일 성공. Despawn 후 _serverDurations가 비워져 재스폰 시 _activeEffects와 인덱스 불일치 없음. ApplyEffect/RemoveEffect에 IsSpawned 가드 추가 확인"
+  },
+  {
+    "id": "STATUS-FIX-04",
+    "task": "PlayerHealth Stealth 해제 순서 명확화 — 무적 체크 이전/이후 설계 의도 주석 또는 순서 변경 (PR#2 리뷰 대응)",
+    "status": "done",
+    "verification": "코드에 설계 의도가 주석으로 명시되거나, '실제 피해 시에만 해제' 의도라면 Invincible 체크 이후로 순서 변경. 컴파일 성공"
+  },
+  {
+    "id": "STATUS-FIX-05",
+    "task": "PlayerController 공격 입력 경로에 Stun 가드 추가 + 기절 중 누적 입력 소비/폐기 정책 명확화 (PR#2 후속 리뷰 대응)",
+    "status": "done",
+    "verification": "Stun 활성 중 SetAttackPressed/SendAttackServerRpc 경로에서 공격이 실행되지 않음. 필요 시 jump/attack 누적 입력이 기절 해제 후 오발동하지 않도록 정책이 코드에 반영되고 컴파일 성공"
+  },
+  {
+    "id": "STATUS-FIX-06",
+    "task": "MonsterFSM Stun 시 NavMeshAgent 기존 경로 초기화 및 완전 정지 보장 (PR#2 후속 리뷰 대응)",
+    "status": "done",
+    "verification": "추적 중인 몬스터에 Stun 적용 시 기존 SetDestination 경로가 즉시 중단되고 이동이 멈춤. 기절 해제 후 상태 재평가 흐름이 유지되며 컴파일 성공"
+  },
+  {
+    "id": "TEST-STATUS-01",
+    "task": "STATUS-FIX-05/06 회귀 방지용 Stun PlayMode 검증 추가",
+    "status": "done",
+    "verification": "PlayMode 또는 동등 수준 검증으로 '플레이어는 Stun 중 공격 불가'와 '몬스터는 Stun 중 이동 정지' 시나리오가 재현되고 통과 결과가 기록됨"
+  },
+  {
+    "id": "MONSTER-FIX-01",
+    "task": "MonsterFSM._agent.speed 변경 감지 후 설정 — 매 AI 틱 무조건 재설정 제거 (PR#2 리뷰 대응)",
+    "status": "done",
+    "verification": "Mathf.Approximately 비교 추가 후 컴파일 성공. 속도 변화가 없을 때 NavMeshAgent.speed 재설정 없음"
+  },
+  {
+    "id": "ITEM-FIX-01",
+    "task": "PlayerInventory.IsRoleAllowed GetComponent<RoleStatModifier> Awake/OnNetworkSpawn 캐싱으로 변경 (PR#2 리뷰 대응)",
+    "status": "done",
+    "verification": "컴파일 성공. _roleStatModifier 필드 캐싱 후 IsRoleAllowed 호출마다 GetComponent 재호출 없음. modifier null 시 명시적 로그 추가"
+  },
+  {
+    "id": "SKILL-01",
+    "task": "스킬 시스템 조건/효과(ConditionType/EffectType) Enum 및 SO 뼈대",
+    "status": "done",
+    "verification": "인스펙터를 통한 스킬 조건, 효과 조립 검사"
+  },
+  {
+    "id": "SKILL-02",
+    "task": "SkillConditionMonitor 런타임 이벤트 등록 로직",
+    "status": "done",
+    "verification": "타격 및 피격 등의 이벤트 리시빙 로그 확인"
+  },
+  {
+    "id": "SKILL-03",
+    "task": "Condition 판정 로직과 Effect 부여 연동 (IStatusEffectable 경로)",
+    "status": "done",
+    "verification": "기획된 조건 만족 시 상태 변화 직접 발동 점검"
+  },
+  {
+    "id": "SKILL-04",
+    "task": "SkillProjectile을 이용한 조건-효과 지연(Payload Chaining) 연쇄 로직",
+    "status": "done",
+    "verification": "독화살 투척 -> 명중 시 독 디버프 전이 사이클 확인"
+  },
+  {
+    "id": "NET-03",
+    "task": "네트워크 수신 큐 최적화 (UnityTransport MaxPacketQueueSize 증가)",
+    "status": "done",
+    "verification": "네트워크 연결 및 대량 패킷 발생 시 'Receive queue is full' 경고 메세지 미발생 확인"
+  },
+  {
+    "id": "NET-04",
+    "task": "NetworkConnectionLogger: Awake()→Start() 이전으로 NetworkManager.Singleton 접근 타이밍 보정",
+    "status": "done",
+    "verification": "Host/Client 실행 시 MaxPacketQueueSize 설정 적용 로그 출력 확인 (Singleton null 경고 없음)"
+  },
+  {
+    "id": "ITEM-05",
+    "task": "PlayerInventory 캐싱 누락 수정: _roleStatModifier(Awake 캐싱) + _ownerRpcParams(OnNetworkSpawn 캐싱)",
+    "status": "done",
+    "verification": "ServerAddItem / UseRejectedClientRpc 호출 시 GetComponent 재호출 없음 (코드 검토)"
+  },
+  {
+    "id": "ITEM-06",
+    "task": "PlayerInventory: _slots.OnListChanged 구독 등록 및 늦은 접속 클라이언트용 초기 슬롯 순회 스텁 추가",
+    "status": "done",
+    "verification": "늦은 접속 클라이언트에서 OnListChanged 콜백이 기존 슬롯 수만큼 호출되는지 로그 확인"
+  },
+  {
+    "id": "WFC-01",
+    "task": "Tile.cs isDangerous 플래그 추가 — 안전(StartRoom/SpecialRoom/ExitRoom) / 위험(NormalRoom/ObjectiveRoom/Corridor) 구분",
+    "status": "done",
+    "verification": "Inspector에서 isDangerous 필드 확인. NormalRoom·ObjectiveRoom·Corridor prefab은 true, 나머지는 false"
+  },
+  {
+    "id": "WFC-02",
+    "task": "WFCGenerator ExitRoom 가장자리 배치 제약 구현 — 그리드 가장자리(x==0, x==max, z==0, z==max) 셀에만 ExitRoom 허용",
+    "status": "done",
+    "verification": "Bake 10회 반복 시 ExitRoom이 항상 그리드 가장자리 셀에 배치됨"
+  },
+  {
+    "id": "WFC-03",
+    "task": "타일 weight 비율 조정 — 5×5 기준 19방 구성 (NormalRoom×7, ObjectiveRoom×2, SpecialRoom×3, Corridor×5, StartRoom×1, ExitRoom×1, Air×6)",
+    "status": "done",
+    "verification": "Bake 후 Console 로그로 각 TileType 배치 수 집계. 목표 비율 ±1 범위 내 확인"
+  },
+  {
+    "id": "WFC-04",
+    "task": "ObjectiveRoom 런타임 랜덤 타입 배정 — ObjectiveType enum(Retrieval/Rescue/Ritual/RandomEvent) 정의 및 생성 시 배정",
+    "status": "done",
+    "verification": "ProcessRoomLogics에서 ObjectiveRoom마다 다른 ObjectiveType이 로그 출력됨. 4종 모두 등장 가능"
+  },
+  {
+    "id": "WFC-05",
+    "task": "RoomStateManager — 재입장 리스폰 조건 시스템 (일정 시간 경과 AND 접속 중 플레이어 전원 입장 시 몬스터 리스폰)",
+    "status": "done",
+    "verification": "NormalRoom 퇴장 후 조건 충족 시 몬스터 리스폰 로그 출력. StartRoom/SpecialRoom/ExitRoom은 리스폰 없음"
+  },
+  {
+    "id": "WFC-06",
+    "task": "KayKit 프리팹 Tile.cs 세팅 — 주요 프리팹에 TileType/SocketType/weight/isDangerous 인스펙터 배정 (방 단위 최소 1종씩)",
+    "status": "done",
+    "verification": "각 TileType에 해당하는 프리팹 최소 1종 이상 설정 완료. WFCGenerator tilePrefabs 리스트에 연결 후 Bake 성공"
+  },
+  {
+    "id": "WFC-07",
+    "task": "던전 Bake 통합 검증 — 5×5 그리드에서 StartRoom 1개, ExitRoom 1개(가장자리), SpecialRoom 1개 이상 포함 조건 통과",
+    "status": "done",
+    "verification": "BakeDungeonEditor 10회 실행 — 10/10 PASS. StartRoom=1, ExitRoom=1(가장자리), SpecialRoom>=1, '[WFC-Bake] 3D 던전 굽기 성공' 로그 모두 확인. 컴파일 에러 없음."
+  }
+]
