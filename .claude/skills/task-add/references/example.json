@@ -1,0 +1,8 @@
+[
+  {
+    "id": "SETUP-01",
+    "task": "Netcode for GameObjects (com.unity.netcode.gameobjects) 패키지 설치",
+    "status": "done",
+    "verification": "packages-lock.json에서 com.unity.netcode.gameobjects 2.10.0 확인"
+  }
+]
